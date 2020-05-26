@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Card, Spinner } from 'react-bootstrap';
+import { parseApiUrl } from '../../utils';
+import { Planet } from '..';
 
 class Person extends Component {
   state = {
@@ -9,9 +11,13 @@ class Person extends Component {
   componentDidMount = () => {
     const { id } = this.props;
 
+    this.fetchPerson(id);
+  }
+
+  fetchPerson = (id) => {
     fetch(`https://swapi.dev/api/people/${id}`)
     .then(response => response.json())
-    .then(data => this.setState({ person: data }));  
+    .then(data => this.setState({ person: data }));
   }
 
   render = () => {
@@ -31,6 +37,9 @@ class Person extends Component {
         <Card.Body>
           <Card.Text>Height: {person.height}</Card.Text>
           <Card.Text>Mass: {person.mass}</Card.Text>
+          <Card.Text>Homeworld:
+            <Planet.Link id={parseApiUrl(person.homeworld).id} />
+          </Card.Text>
         </Card.Body>
       </Card>
     );

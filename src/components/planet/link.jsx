@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import Link from './link';
-import { Card, Spinner } from 'react-bootstrap';
+import { Spinner } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
-class Planet extends Component {
+class PlanetLink extends Component {
   state = {
     planet: null,
   }
@@ -16,6 +16,7 @@ class Planet extends Component {
   }
 
   render = () => {
+    const { id } = this.props;
     const { planet } = this.state;
 
     if (planet === null) {
@@ -27,17 +28,11 @@ class Planet extends Component {
     }
 
     return (
-      <Card>
-        <Card.Header as="h3">{planet.name}</Card.Header>
-        <Card.Body>
-          <Card.Text>Diameter: {planet.diameter}</Card.Text>
-          <Card.Text>Climate: {planet.climate}</Card.Text>
-        </Card.Body>
-      </Card>
+      <Link to={`/planets/${id}`}>
+        {planet.name}
+      </Link>
     );
   }
 }
 
-Planet.Link = Link;
-
-export default Planet;
+export default PlanetLink;
