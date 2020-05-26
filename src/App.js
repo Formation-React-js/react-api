@@ -1,5 +1,5 @@
 import React from 'react';
-import { Person } from './components';
+import { Person, Planet } from './components';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container } from 'react-bootstrap';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
@@ -10,8 +10,11 @@ const App = () => {
     <BrowserRouter>
       <Container>
         <Switch>
-          <Route exact path="/person/:id" render={
+          <Route exact path="/people/:id" render={
             ({ match }) => <Person id={match.params.id} />
+          } />
+          <Route exact path="/planets/:id" render={
+            ({ match }) => <Planet id={match.params.id} />
           } />
         </Switch>
       </Container>
