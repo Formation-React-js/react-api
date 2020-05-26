@@ -1,38 +1,20 @@
-import React, { Component } from 'react';
-import { Spinner } from 'react-bootstrap';
+import React from 'react';
 import { Link } from 'react-router-dom';
+import ApiContainer from '../api-container';
 
-class PlanetLink extends Component {
-  state = {
-    planet: null,
-  }
-
-  componentDidMount = () => {
-    const { id } = this.props;
-
-    fetch(`https://swapi.dev/api/planets/${id}`)
-    .then(response => response.json())
-    .then(data => this.setState({ planet: data }));  
-  }
-
-  render = () => {
-    const { id } = this.props;
-    const { planet } = this.state;
-
-    if (planet === null) {
-      return (
-        <Spinner animation="border" role="status">
-          <span className="sr-only">Loading...</span>
-        </Spinner>
-      );
-    }
-
-    return (
-      <Link to={`/planets/${id}`}>
-        {planet.name}
-      </Link>
-    );
-  }
+const PlanetLink = ({ id }) => {
+  return (
+    <ApiContainer
+      type="planets"
+      id={id}
+    >
+      {(planet) =>
+        <Link to={`/planets/${id}`}>
+          {planet.name}
+        </Link>
+      }
+    </ApiContainer>
+  );
 }
 
 export default PlanetLink;
