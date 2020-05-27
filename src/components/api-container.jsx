@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Spinner } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import store from '../state';
+import { mapDispatchToProps } from '../state/apiReducer';
 
 // Ce composant est responsable d'aller chercher les données dans l'API
 // et affiche le rendu normal du composant qui l'a appelé uniquement
@@ -14,15 +14,12 @@ class ApiContainer extends Component {
   // Au moment où le composant est créé, envoie une requête à l'API
   // et stocke le résultat dans son state
   componentDidMount = () => {
-    const { type, id } = this.props;
+    const { type, id, fetchObject, fetchObjectSuccess, fetchObjectError } = this.props;
 
     const object = this.props[type].data[id];
 
     if (typeof object === 'undefined') {
-      store.dispatch({
-        type: `FETCH_${type.toUpperCase()}`,
-        id
-      });
+      fetchObject(type, id);
       fetch(`https://swapi.dev/api/${type}/${id}`)
       .then(response => {
         if (response.status === 404) {
@@ -30,16 +27,8 @@ class ApiContainer extends Component {
         }
         return response.json();
       })
-      .then(data => store.dispatch({
-        type: `FETCH_${type.toUpperCase()}_SUCCESS`,
-        id,
-        data,
-      }))
-      .catch(error => store.dispatch({
-        type: `FETCH_${type.toUpperCase()}_ERROR`,
-        id,
-        error: error.message,
-      }));
+      .then(data => fetchObjectSuccess(type, id, data))
+      .catch(error => fetchObjectError(type, id, error));
     }
   }
 
@@ -66,4 +55,4 @@ class ApiContainer extends Component {
 
 const mapStateToProps = (state) => state;
 
-export default connect(mapStateToProps)(ApiContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(ApiContainer);
