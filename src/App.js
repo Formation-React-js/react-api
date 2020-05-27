@@ -1,5 +1,5 @@
 import React from 'react';
-import { Person, Planet } from './components';
+import { Person, Planet, Film } from './components';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container } from 'react-bootstrap';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
@@ -17,6 +17,9 @@ const App = () => {
             } />
             <Route exact path="/planets/:id" render={
               ({ match }) => <Planet id={match.params.id} />
+            } />
+            <Route exact path="/films/:id" render={
+              ({ match }) => <Film id={match.params.id} />
             } />
           </Switch>
         </Container>

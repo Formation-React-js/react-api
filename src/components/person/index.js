@@ -3,6 +3,7 @@ import { Card } from 'react-bootstrap';
 import { parseApiUrl } from '../../utils';
 import { Planet } from '..';
 import ApiContainer from '../api-container';
+import Link from './link';
 
 const Person = ({ id }) => {
   return (
@@ -25,5 +26,7 @@ const Person = ({ id }) => {
     </ApiContainer>
   );
 }
+
+Person.Link = Link;
     
 export default Person;
