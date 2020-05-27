@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Spinner } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import store from '../state';
 
 // Ce composant est responsable d'aller chercher les données dans l'API
 // et affiche le rendu normal du composant qui l'a appelé uniquement
@@ -14,17 +16,40 @@ class ApiContainer extends Component {
   componentDidMount = () => {
     const { type, id } = this.props;
 
-    fetch(`https://swapi.dev/api/${type}/${id}`)
-    .then(response => response.json())
-    .then(data => this.setState({ data }))
+    const object = this.props[type].data[id];
+
+    if (typeof object === 'undefined') {
+      store.dispatch({
+        type: `FETCH_${type.toUpperCase()}`,
+        id
+      });
+      fetch(`https://swapi.dev/api/${type}/${id}`)
+      .then(response => {
+        if (response.status === 404) {
+          throw new Error('Not found');
+        }
+        return response.json();
+      })
+      .then(data => store.dispatch({
+        type: `FETCH_${type.toUpperCase()}_SUCCESS`,
+        id,
+        data,
+      }))
+      .catch(error => store.dispatch({
+        type: `FETCH_${type.toUpperCase()}_ERROR`,
+        id,
+        error: error.message,
+      }));
+    }
   }
 
   render = () => {
-    const { children } = this.props;
-    const { data } = this.state;
+    const { children, type, id } = this.props;
+
+    const object = this.props[type].data[id];
 
     // Tant que la requête à l'API n'a pas répondu, afficher un loader
-    if (data === null) {
+    if (typeof object === 'undefined') {
       return (
         <Spinner animation="border" role="status">
           <span className="sr-only">Loading...</span>
@@ -35,8 +60,10 @@ class ApiContainer extends Component {
     // Dès que la requête a répondu, renvoie l'affichage normal du
     // composant supérieur, en lui passant les données de l'API
     // comme paramètre
-    return children(data);
+    return children(object);
   }
 }
 
-export default ApiContainer;
+const mapStateToProps = (state) => state;
+
+export default connect(mapStateToProps)(ApiContainer);

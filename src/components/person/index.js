@@ -22,7 +22,7 @@ const Person = ({ id }) => {
           </Card.Body>
         </Card>
       }
-  </ApiContainer>
+    </ApiContainer>
   );
 }
     
